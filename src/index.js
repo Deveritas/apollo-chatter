@@ -62,8 +62,10 @@ server.applyMiddleware({ app, path: '/graphql' });
 const httpServer = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);
 
-sequelize.sync({ force: isTest || isProduction }).then(async () => {
-  if (isTest || isProduction) {
+let force = isTest || (isProduction && process.env.HEROKU_FORCE_PG_RESET);
+
+sequelize.sync({ force }).then(async () => {
+  if (force) {
     await createUsersWithMessages(models, new Date())
   }
   httpServer.listen({ port }, () => {
