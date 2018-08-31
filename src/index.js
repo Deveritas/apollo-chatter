@@ -52,8 +52,8 @@ let formatError = error => ({
 const isTest = !!process.env.TEST_DATABASE;
 const isProduction = !!process.env.DATABASE_URL;
 const port = process.env.PORT || 8000;
-const forcePlayground = !isProduction || process.env.HEROKU_FORCE_GRAPHQL_PLAYGROUND;
-const force = isTest || (isProduction && process.env.HEROKU_FORCE_PG_RESET);
+const forcePlayground = !isProduction || process.env.FORCE_HEROKU_GRAPHQL_PLAYGROUND;
+const force = isTest || (isProduction && process.env.FORCE_HEROKU_PG_RESET);
 
 const app = express();
 app.use(cors());
