@@ -50,6 +50,8 @@ let formatError = error => ({
 });
 
 const isTest = !!process.env.TEST_DATABASE;
+const isProduction = !!process.env.DATABASE_URL;
+const port = process.env.PORT || 8000;
 
 const app = express();
 app.use(cors());
@@ -60,11 +62,11 @@ server.applyMiddleware({ app, path: '/graphql' });
 const httpServer = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);
 
-sequelize.sync({ force: isTest }).then(async () => {
-  if (isTest) {
+sequelize.sync({ force: isTest || isProduction }).then(async () => {
+  if (isTest || isProduction) {
     await createUsersWithMessages(models, new Date())
   }
-  httpServer.listen({ port: 8000 }, () => {
-    console.log(`Apollo server on http://localhost:8000${server.graphqlPath}`);
+  httpServer.listen({ port }, () => {
+    console.log(`Apollo server on http://localhost:${port}${server.graphqlPath}`);
   });
 });
