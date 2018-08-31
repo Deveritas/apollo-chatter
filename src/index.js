@@ -52,17 +52,24 @@ let formatError = error => ({
 const isTest = !!process.env.TEST_DATABASE;
 const isProduction = !!process.env.DATABASE_URL;
 const port = process.env.PORT || 8000;
+const forcePlayground = !isProduction || process.env.HEROKU_FORCE_GRAPHQL_PLAYGROUND;
+const force = isTest || (isProduction && process.env.HEROKU_FORCE_PG_RESET);
 
 const app = express();
 app.use(cors());
 
-const server = new ApolloServer({ typeDefs, resolvers, formatError, context, });
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  formatError,
+  context,
+  introspection: forcePlayground,
+  playground: forcePlayground
+});
 server.applyMiddleware({ app, path: '/graphql' });
 
 const httpServer = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);
-
-let force = isTest || (isProduction && process.env.HEROKU_FORCE_PG_RESET);
 
 sequelize.sync({ force }).then(async () => {
   if (force) {
