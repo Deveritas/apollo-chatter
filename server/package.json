@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon --exec babel-node src/index.js",
     "test-server": "TEST_DATABASE=apollo_test npm start",
-    "test": "mocha $NODE_DEBUG_OPTION --require @babel/register 'src/**/*.spec.js'"
+    "test": "mocha $NODE_DEBUG_OPTION --require @babel/register 'src/**/*.spec.js'",
+    "publish": "cd .. && git subtree push --prefix server heroku master"
   },
   "author": "Deveritas <themrdeveritas@gmail.com>",
   "license": "MIT",
